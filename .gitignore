@@ -27,3 +27,5 @@ hs_err_pid*
 *.swp
 *.swo
 
+# my cleaning batch file
+clean.sh
