@@ -29,3 +29,6 @@ hs_err_pid*
 
 # my cleaning batch file
 clean.sh
+
+# vscode
+.vs/
