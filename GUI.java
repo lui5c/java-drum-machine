@@ -18,8 +18,9 @@ public class GUI extends JFrame{
         JButton go = new JButton("GO");
         go.setHorizontalAlignment(SwingConstants.CENTER);
         go.setFont(helvetica);
-        row.add(go)
-
+        row.add(go);
+        row.add(reset);
+        return row;
     }
 
     public JPanel getGUIRow(String labelString){
