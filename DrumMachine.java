@@ -17,8 +17,12 @@ import javax.sound.sampled.*;
         String hat_path = "assets/sounds/hat.wav";
         
         Sample kickSample = null;
+        Sample snareSample = null;
+        Sample hatSample = null;
         try {
            kickSample = new Sample(kick_path);
+           snareSample = new Sample(snare_path);
+           hatSample = new Sample(hat_path);
         } catch (UnsupportedAudioFileException e){
            kickSample = null;
            System.out.println("Unsupported Audio File");
@@ -28,11 +32,11 @@ import javax.sound.sampled.*;
            e.printStackTrace();
         }
 
-        GUI gui = new GUI();
-
-        if (kickSample == null){
+        if (kickSample == null || snareSample == null || hatSample == null){
            System.exit(1);
         }
-        kickSample.play();
+        
+        GUI gui = new GUI();
+
      }
     }
