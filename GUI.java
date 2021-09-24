@@ -13,13 +13,21 @@ public class GUI extends JFrame{
 
     public JPanel getTopJPanel(){
         JPanel row = new JPanel();
+
         JButton reset = new JButton("STOP");
         reset.setHorizontalAlignment(SwingConstants.CENTER);
+        reset.setFont(helvetica);
+        reset.setBackground(Color.orange);
+
         JButton go = new JButton("GO");
         go.setHorizontalAlignment(SwingConstants.CENTER);
         go.setFont(helvetica);
+        go.setBackground(Color.green);
+
         row.add(go);
         row.add(reset);
+        row.setLayout(new GridLayout());
+        row.setBackground(Color.WHITE);
         return row;
     }
 
@@ -39,11 +47,13 @@ public class GUI extends JFrame{
     }
 
     public GUI(){
+        JPanel topRow = getTopJPanel();
         JPanel BPMRow = getGUIRow("bpm:");
         JPanel hatRow = getGUIRow("hat pattern:");
         JPanel snareRow = getGUIRow("snare pattern:");
         JPanel kickRow = getGUIRow("kick pattern:");
 
+        add(topRow);
         add(BPMRow);
         add(hatRow);
         add(snareRow);
@@ -53,6 +63,7 @@ public class GUI extends JFrame{
         setSize(500, 400);
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setVisible(true);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
     public static void main(String[] args){
         new GUI();
