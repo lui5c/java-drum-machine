@@ -31,12 +31,19 @@ public class GUI extends JFrame{
         return row;
     }
 
-    public JPanel getGUIRow(String labelString){
+    public JPanel getGUIRow(String labelString, String placeholder){
         JPanel row = new JPanel();
         JLabel label = new JLabel(labelString);
         label.setFont(helvetica);
         label.setHorizontalAlignment(SwingConstants.CENTER);
-        JTextField text = new JTextField();
+
+        JTextField text;
+        if (placeholder != null){
+            text = new JTextField(placeholder);
+        } else {
+            text = new JTextField();
+        }
+
         text.setFont(consolas); //monospace for timing
         text.setSize(200, 30);
         row.add(label);
@@ -48,10 +55,10 @@ public class GUI extends JFrame{
 
     public GUI(){
         JPanel topRow = getTopJPanel();
-        JPanel BPMRow = getGUIRow("bpm:");
-        JPanel hatRow = getGUIRow("hat pattern:");
-        JPanel snareRow = getGUIRow("snare pattern:");
-        JPanel kickRow = getGUIRow("kick pattern:");
+        JPanel BPMRow = getGUIRow("bpm:", "120");
+        JPanel hatRow = getGUIRow("hat pattern:", "oxo");
+        JPanel snareRow = getGUIRow("snare pattern:", "oox");
+        JPanel kickRow = getGUIRow("kick pattern:", "xoo");
 
         add(topRow);
         add(BPMRow);
