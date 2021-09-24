@@ -74,10 +74,10 @@ public class Sample implements LineListener {
             audioClip.close();
         } catch (LineUnavailableException e){
             System.out.println("Line unavailable");
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (IOException e){
             System.out.println("IOException");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 }

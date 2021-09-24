@@ -16,14 +16,21 @@ import javax.sound.sampled.*;
         String snare_path = "assets/sounds/snare.wav";
         String hat_path = "assets/sounds/hat.wav";
         
+        Sample kickSample = null;
         try {
-           Sample kickSample = new Sample(kick_path);
-           kickSample.play();
+           kickSample = new Sample(kick_path);
         } catch (UnsupportedAudioFileException e){
-           System.out.println("error");
+           kickSample = null;
+           System.out.println("Unsupported Audio File");
            e.printStackTrace();
         } catch (IOException e){
+           kickSample = null;
            e.printStackTrace();
         }
+
+        if (kickSample == null){
+           System.exit(1);
+        }
+        kickSample.play();
      }
     }

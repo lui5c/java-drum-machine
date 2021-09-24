@@ -11,11 +11,21 @@ public class GUI extends JFrame{
     Font helvetica = new Font("Helvetica", Font.BOLD, 24);
     Font consolas = new Font("Consolas", Font.BOLD, 36);
 
+    public JPanel getTopJPanel(){
+        JPanel row = new JPanel();
+        JButton reset = new JButton("STOP");
+        reset.setHorizontalAlignment(SwingConstants.CENTER);
+        JButton go = new JButton("GO");
+        go.setHorizontalAlignment(SwingConstants.CENTER);
+        go.setFont(helvetica);
+        row.add(go)
+
+    }
+
     public JPanel getGUIRow(String labelString){
         JPanel row = new JPanel();
         JLabel label = new JLabel(labelString);
         label.setFont(helvetica);
-        label.setMaximumSize(new Dimension(200, 200));
         label.setHorizontalAlignment(SwingConstants.CENTER);
         JTextField text = new JTextField();
         text.setFont(consolas); //monospace for timing
