@@ -11,6 +11,14 @@ public class GUI extends JFrame{
     Font helvetica = new Font("Helvetica", Font.BOLD, 24);
     Font consolas = new Font("Consolas", Font.BOLD, 36);
 
+    public static double BPMtoNanoInterval(double BPM){
+        // takes in a BPM value and returns the nanosecond amount
+        // between beats. 
+        double secPerBeat = Math.pow(BPM / (double) 60, (double) -1);
+        double ns = secPerBeat * Math.pow((double) 10, (double) 9);
+        return ns;
+    }
+
     public JPanel getTopJPanel(){
         JPanel row = new JPanel();
 
@@ -71,8 +79,5 @@ public class GUI extends JFrame{
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setVisible(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    }
-    public static void main(String[] args){
-        new GUI();
     }
 }

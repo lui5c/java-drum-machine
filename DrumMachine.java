@@ -28,6 +28,8 @@ import javax.sound.sampled.*;
            e.printStackTrace();
         }
 
+        GUI gui = new GUI();
+
         if (kickSample == null){
            System.exit(1);
         }
