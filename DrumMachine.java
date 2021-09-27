@@ -1,6 +1,9 @@
 /**
  *  Help with javax.sound.sampled.Clip provided by:
  *  https://www.codejava.net/coding/how-to-play-back-audio-in-java-with-examples
+ * 
+ *  Tip to use a new Thread to play concurrent sounds:
+ *  https://stackoverflow.com/questions/48735326/cant-play-sound-in-java-using-clip
  */
 import java.io.File;
 import java.io.IOException;
