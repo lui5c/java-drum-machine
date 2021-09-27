@@ -5,7 +5,7 @@ import javax.sound.sampled.*;
 
 /** heavily references the following websites: 
  *  https://www.codejava.net/coding/how-to-play-back-audio-in-java-with-examples
- * 
+ *  https://docs.oracle.com/javase/7/docs/api/javax/sound/sampled/AudioInputStream.html
  * 
  */
 
@@ -55,29 +55,38 @@ public class Sample implements LineListener {
 
     public void play(){
         System.out.println("Playing sample: " + originalURI);
+        LineListener pseudo_this = this;
         
-        try {
-            audioClip.addLineListener(this);
-            audioClip.open(inputStream);
-            playing = true;
-            audioClip.start();
-            // while loop necessary to close clip when done
-            while (playing){
-                try{
-                    Thread.sleep(100);
-                    //System.out.println("sleeping");
-                } catch (InterruptedException e){
-                    System.out.println("Error sleeping thread");
+        Thread newThread = new Thread(new Runnable() {
+
+            @Override
+            public void run(){
+                try {
+                    audioClip.addLineListener(pseudo_this);
+                    audioClip.open(inputStream);
+                    playing = true;
+                    audioClip.start();
+                    // while loop necessary to close clip when done
+                    while (playing){
+                        try{
+                            Thread.sleep(100);
+                            //System.out.println("sleeping");
+                        } catch (InterruptedException e){
+                            System.out.println("Error sleeping thread");
+                            e.printStackTrace();
+                        }
+                    }
+                    audioClip.close();
+                } catch (LineUnavailableException e){
+                    System.out.println("Line unavailable");
+                    e.printStackTrace();
+                } catch (IOException e){
+                    System.out.println("IOException");
                     e.printStackTrace();
                 }
             }
-            audioClip.close();
-        } catch (LineUnavailableException e){
-            System.out.println("Line unavailable");
-            //e.printStackTrace();
-        } catch (IOException e){
-            System.out.println("IOException");
-            //e.printStackTrace();
-        }
+            
+        });
+        newThread.start();
     }
 }

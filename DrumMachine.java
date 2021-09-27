@@ -13,15 +13,15 @@ import javax.sound.sampled.*;
      
      public static void main(String[] args){
         String kick_path = "assets/sounds/kick.wav";
-        String snare_path = "assets/sounds/snare.wav";
+        //String snare_path = "assets/sounds/snare.wav";
         String hat_path = "assets/sounds/hat.wav";
         
         Sample kickSample = null;
-        Sample snareSample = null;
+        String snareSample = "1";
         Sample hatSample = null;
         try {
            kickSample = new Sample(kick_path);
-           snareSample = new Sample(snare_path);
+           //snareSample = new Sample(snare_path);
            hatSample = new Sample(hat_path);
         } catch (UnsupportedAudioFileException e){
            kickSample = null;
@@ -37,6 +37,8 @@ import javax.sound.sampled.*;
         }
         
         GUI gui = new GUI();
+        kickSample.play();
+        hatSample.play();
 
      }
     }
