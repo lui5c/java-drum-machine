@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.sound.sampled.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 /** heavily references the following websites: 
  *  https://www.codejava.net/coding/how-to-play-back-audio-in-java-with-examples
@@ -9,7 +11,7 @@ import javax.sound.sampled.*;
  * 
  */
 
-public class Sample implements LineListener {
+public class Sample implements LineListener, Runnable {
     Clip audioClip;
     String originalURI;
     boolean playing = false;
@@ -53,40 +55,32 @@ public class Sample implements LineListener {
         }
     }
 
-    public void play(){
+    @Override
+    public void run(){
         System.out.println("Playing sample: " + originalURI);
         LineListener pseudo_this = this;
-        
-        Thread newThread = new Thread(new Runnable() {
-
-            @Override
-            public void run(){
-                try {
-                    audioClip.addLineListener(pseudo_this);
-                    audioClip.open(inputStream);
-                    playing = true;
-                    audioClip.start();
-                    // while loop necessary to close clip when done
-                    while (playing){
-                        try{
-                            Thread.sleep(100);
-                            //System.out.println("sleeping");
-                        } catch (InterruptedException e){
-                            System.out.println("Error sleeping thread");
-                            e.printStackTrace();
-                        }
-                    }
-                    audioClip.close();
-                } catch (LineUnavailableException e){
-                    System.out.println("Line unavailable");
-                    e.printStackTrace();
-                } catch (IOException e){
-                    System.out.println("IOException");
+        try {
+            audioClip.addLineListener(pseudo_this);
+            audioClip.open(inputStream);
+            playing = true;
+            audioClip.start();
+            // while loop necessary to close clip when done
+            while (playing){
+                try{
+                    Thread.sleep(100);
+                    //System.out.println("sleeping");
+                } catch (InterruptedException e){
+                    System.out.println("Error sleeping thread");
                     e.printStackTrace();
                 }
             }
-            
-        });
-        newThread.start();
+            audioClip.close();
+        } catch (LineUnavailableException e){
+            System.out.println("Line unavailable");
+            e.printStackTrace();
+        } catch (IOException e){
+            System.out.println("IOException");
+            e.printStackTrace();
+        }
     }
 }
