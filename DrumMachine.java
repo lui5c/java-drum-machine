@@ -17,18 +17,19 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public class DrumMachine {
+   ExecutorService threadPool;
+   Sample kickSample = null;
+   Sample snareSample = null;
+   Sample hatSample = null;
 
-     
-   public static void main(String[] args){
+
+   public DrumMachine(){
+      threadPool = Executors.newFixedThreadPool(3);
+
       String kick_path = "assets/sounds/kick.wav";
-      //String snare_path = "assets/sounds/snare.wav";
+      String snare_path = "assets/sounds/snare.wav";
       String hat_path = "assets/sounds/hat.wav";
-
-      ExecutorService executor = Executors.newFixedThreadPool(3);
       
-      Sample kickSample = null;
-      String snareSample = "1";
-      Sample hatSample = null;
       try {
          kickSample = new Sample(kick_path);
          //snareSample = new Sample(snare_path);
@@ -42,19 +43,20 @@ public class DrumMachine {
          e.printStackTrace();
       }
 
+      String snareSample = "1"; // for when the snare sample acts weird
       if (kickSample == null || snareSample == null || hatSample == null){
          System.exit(1);
       }
-      
+
       GUI gui = new GUI();
-      executor.execute(kickSample);
-      executor.execute(hatSample);
+      threadPool.execute(kickSample);
+      threadPool.execute(hatSample);
 
       gui.addWindowListener(new WindowListener() {
          @Override
          public void windowClosed(WindowEvent e){
-            System.out.println("window closed");
-            executor.shutdown();
+            //System.out.println("window closed");
+            threadPool.shutdown();
          }
          @Override
          public void windowClosing(WindowEvent e){}
@@ -69,5 +71,8 @@ public class DrumMachine {
          @Override
          public void windowActivated(WindowEvent e){}
       });
+   }
+   public static void main(String[] args){
+      new DrumMachine();
    }
 }
