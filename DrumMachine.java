@@ -16,6 +16,8 @@ import java.util.concurrent.Executors;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import java.util.HashMap;
+
 public class DrumMachine {
    ExecutorService threadPool;
    Sample kickSample = null;
@@ -44,6 +46,7 @@ public class DrumMachine {
       }
 
       if (kickSample == null || snareSample == null || hatSample == null){
+         System.out.print("Could not successfully initialize DrumMachine.");
          System.exit(1);
       }
 
@@ -52,6 +55,7 @@ public class DrumMachine {
       threadPool.execute(hatSample);
       threadPool.execute(snareSample);
 
+      //gui extends JFrame so all JFrame methods work on it
       gui.addWindowListener(new WindowListener() {
          @Override
          public void windowClosed(WindowEvent e){
@@ -71,6 +75,11 @@ public class DrumMachine {
          @Override
          public void windowActivated(WindowEvent e){}
       });
+   }
+
+   public void playConfiguration(HashMap<String, int[]> pattern){
+      //pattern is [[hat pattern], [snare pattern], [kick pattern]]
+      System.out.println(pattern);
    }
    public static void main(String[] args){
       new DrumMachine();

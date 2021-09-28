@@ -19,6 +19,16 @@ public class GUI extends JFrame{
         return ns;
     }
 
+    public int[][] getConfig(){
+        int[][] config = new int[3][];
+        /**
+         * int[0] = new int[] {hat pattern}
+         * int[1] = new int[] {snare pattern}
+         * int[2] = new int[] {kick pattern}
+         */
+        return config;
+    }
+
     public JPanel getTopJPanel(){
         JPanel row = new JPanel();
 
