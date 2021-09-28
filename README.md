@@ -4,10 +4,10 @@ A very simple, polyrhythm-oriented drum machine. Each sample's sequence is progr
 
 Sequences are programmed entirely in quarter-note rests and quarter notes. If you want a complicated sequence with eighth or sixteenth note rests, you have to use a higher BPM and adjust the sequence accordingly. 
 
-For example, a classic rock pattern would be written:
+For example, a half-time classic rock pattern would be written:
 
 hat:    x
-snare:  ox
-kick:   xo
+snare:  ooxo
+kick:   xooo
 
-The hat plays every beat (1-note pattern). The kick plays on odd beats and the snare plays on even beats. 
+x is a note, o is a rest. The hat plays every beat (1-note pattern). The kick plays on the 1 and the snare plays on the 3. 
