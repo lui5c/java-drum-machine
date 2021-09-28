@@ -32,6 +32,9 @@ public class Sample implements LineListener, Runnable {
             audioClip = (Clip) AudioSystem.getLine(info);
         } catch (LineUnavailableException e){
             e.printStackTrace();
+        } catch (IllegalArgumentException e){
+            System.out.println("When this error happened to me, I had to find a different snare sample. Each sample had a 705kbps bitrate during testing.");
+            e.printStackTrace();
         }
         
         
