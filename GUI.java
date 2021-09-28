@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 
+import java.util.HashMap;
+
 /** with help from:
  *  - https://www.javatpoint.com/
  * 
@@ -19,12 +21,13 @@ public class GUI extends JFrame{
         return ns;
     }
 
-    public int[][] getConfig(){
-        int[][] config = new int[3][];
+    public HashMap<String, int[]> getConfig(){
+        HashMap<String, int[]> config = new HashMap<String, int[]>();
         /**
-         * int[0] = new int[] {hat pattern}
-         * int[1] = new int[] {snare pattern}
-         * int[2] = new int[] {kick pattern}
+         * "bpm"    : int[] {bpm}
+         * "hat"    : int[] {h1, h2, h3, h4}
+         * "snare"  : int[] {}
+         * "kick"   : int[] {kick pattern}
          */
         return config;
     }
