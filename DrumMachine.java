@@ -32,7 +32,7 @@ public class DrumMachine {
       
       try {
          kickSample = new Sample(kick_path);
-         //snareSample = new Sample(snare_path);
+         snareSample = new Sample(snare_path);
          hatSample = new Sample(hat_path);
       } catch (UnsupportedAudioFileException e){
          kickSample = null;
@@ -43,7 +43,6 @@ public class DrumMachine {
          e.printStackTrace();
       }
 
-      String snareSample = "1"; // for when the snare sample acts weird
       if (kickSample == null || snareSample == null || hatSample == null){
          System.exit(1);
       }
@@ -51,6 +50,7 @@ public class DrumMachine {
       GUI gui = new GUI();
       threadPool.execute(kickSample);
       threadPool.execute(hatSample);
+      threadPool.execute(snareSample);
 
       gui.addWindowListener(new WindowListener() {
          @Override
