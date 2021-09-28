@@ -13,6 +13,9 @@ import javax.sound.sampled.*;
 import java.util.concurrent.ExecutorService;  
 import java.util.concurrent.Executors;  
 
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
 public class DrumMachine {
 
      
@@ -46,5 +49,25 @@ public class DrumMachine {
       GUI gui = new GUI();
       executor.execute(kickSample);
       executor.execute(hatSample);
+
+      gui.addWindowListener(new WindowListener() {
+         @Override
+         public void windowClosed(WindowEvent e){
+            System.out.println("window closed");
+            executor.shutdown();
+         }
+         @Override
+         public void windowClosing(WindowEvent e){}
+         @Override
+         public void windowDeiconified(WindowEvent e){}
+         @Override
+         public void windowDeactivated(WindowEvent e){}
+         @Override
+         public void windowIconified(WindowEvent e){}
+         @Override
+         public void windowOpened(WindowEvent e){}
+         @Override
+         public void windowActivated(WindowEvent e){}
+      });
    }
 }

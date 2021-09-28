@@ -2,8 +2,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.sound.sampled.*;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 
 /** heavily references the following websites: 
  *  https://www.codejava.net/coding/how-to-play-back-audio-in-java-with-examples
