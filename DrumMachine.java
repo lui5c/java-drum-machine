@@ -20,13 +20,18 @@ import java.awt.event.*;
 
 import java.util.HashMap;
 
-public class DrumMachine {
+public class DrumMachine extends Thread{
    ExecutorService threadPool;
    Sample kickSample = null;
    Sample snareSample = null;
    Sample hatSample = null;
-   boolean looping = false;
+   volatile boolean looping = false;
+   volatile boolean listening = false;
 
+   String hatpattern;
+   String snarepattern;
+   String kickpattern;
+   long interval;
 
    public DrumMachine(){
       threadPool = Executors.newFixedThreadPool(3);
@@ -52,58 +57,54 @@ public class DrumMachine {
          System.out.print("Could not successfully initialize DrumMachine.");
          System.exit(1);
       }
-
-      GUI gui = new GUI();
       threadPool.execute(kickSample);
       threadPool.execute(hatSample);
       threadPool.execute(snareSample);
-
-      gui.go.addActionListener(new ActionListener() {
-         
-         @Override
-         public void actionPerformed(ActionEvent e){
-            System.out.println("go");
-            playConfiguration(gui.getConfig());
-         }
-      });
-
-      gui.reset.addActionListener(new ActionListener() {
-         
-         @Override
-         public void actionPerformed(ActionEvent e){
-            System.out.println("reset");
-            looping = false;
-         }
-      });
-
-      //gui extends JFrame so all JFrame methods work on it
-      gui.addWindowListener(new WindowListener() {
-         @Override
-         public void windowClosed(WindowEvent e){
-            //System.out.println("window closed");
-            threadPool.shutdown();
-         }
-         @Override
-         public void windowClosing(WindowEvent e){}
-         @Override
-         public void windowDeiconified(WindowEvent e){}
-         @Override
-         public void windowDeactivated(WindowEvent e){}
-         @Override
-         public void windowIconified(WindowEvent e){}
-         @Override
-         public void windowOpened(WindowEvent e){}
-         @Override
-         public void windowActivated(WindowEvent e){}
-      });
+      
+      listening = true;
    }
 
-   public void playConfiguration(HashMap<String, String> pattern){
+   public void setConfig(HashMap<String, String> pattern){
+      // parse the information in the HashMap
+      System.out.println("configuring drum machine for :" + pattern);
+      interval = Long.parseLong(pattern.get("interval")); // time to wait between beats
+      String hatPattern = pattern.get("hat");
+      String snarePattern = pattern.get("snare");
+      String kickPattern = pattern.get("kick");
+      System.out.println("hat repeats every " + hatPattern.length() + " beats, snare repeats every " + snarePattern.length() + " beats, kick repeats every " + kickPattern.length() + " beats, ns between beats is " + interval);
+   }
+
+   @Override
+   public void run(){
+      try {
+         while (listening){
+            synchronized(this){
+               if(!looping){
+                  wait();
+               }
+            }
+            while (looping){
+               System.out.println("playing");
+               Thread.sleep(1000);
+            }
+         }
+      } catch (InterruptedException e){
+         System.out.println("problem sleeping thread");
+      }
+   }
+
+   public synchronized void keepLooping(){
       looping = true;
-      int ns = Integer.parseInt(pattern.get("bpm"));
-      System.out.println(pattern);
+      notifyAll();
    }
-   public static void main(String[] args){
-      new DrumMachine();
+
+   public synchronized void stopLooping(){
+      looping = false;
+      notifyAll();
+   }
+
+   public synchronized void stopListening(){
+      listening = false;
+      notifyAll();
    }
 }

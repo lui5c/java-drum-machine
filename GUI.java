@@ -1,6 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.*;
+import java.awt.event.*;
+
+
 import java.util.HashMap;
 /** with help from:
  *  - https://www.javatpoint.com/
@@ -18,7 +24,7 @@ public class GUI extends JFrame{
     JButton reset;
     JButton go;
 
-    public int getNSinterval(){
+    public long getNSinterval(){
         // takes in a BPM value and returns the nanosecond amount
         // between beats. 
         double BPM = (double) Integer.valueOf(bpm);
@@ -120,5 +126,44 @@ public class GUI extends JFrame{
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setVisible(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+    public static void main(String[] args){
+        GUI gui = new GUI();
+
+        DrumMachine dm = new DrumMachine();
+        Thread DMThread = new Thread(dm);
+
+        gui.addWindowListener(new WindowListener() {
+            @Override
+            public void windowClosed(WindowEvent e){
+               //System.out.println("window closed");
+               dm.threadPool.shutdown();
+               dm.stopListening();
+            }
+            @Override
+            public void windowClosing(WindowEvent e){}
+            @Override
+            public void windowDeiconified(WindowEvent e){}
+            @Override
+            public void windowDeactivated(WindowEvent e){}
+            @Override
+            public void windowIconified(WindowEvent e){}
+            @Override
+            public void windowOpened(WindowEvent e){}
+            @Override
+            public void windowActivated(WindowEvent e){}
+         });
+
+        gui.reset.addActionListener(e -> dm.stopLooping());
+        gui.reset.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                System.out.println("reset");
+            }
+        });
+
+        gui.go.addActionListener(e -> dm.keepLooping());
+        
+        DMThread.start();        
     }
 }
