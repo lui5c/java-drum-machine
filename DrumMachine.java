@@ -15,6 +15,8 @@ import java.util.concurrent.Executors;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.*;
+import java.awt.event.*;
 
 import java.util.HashMap;
 
@@ -23,6 +25,7 @@ public class DrumMachine {
    Sample kickSample = null;
    Sample snareSample = null;
    Sample hatSample = null;
+   boolean looping = false;
 
 
    public DrumMachine(){
@@ -55,6 +58,24 @@ public class DrumMachine {
       threadPool.execute(hatSample);
       threadPool.execute(snareSample);
 
+      gui.go.addActionListener(new ActionListener() {
+         
+         @Override
+         public void actionPerformed(ActionEvent e){
+            System.out.println("go");
+            playConfiguration(gui.getConfig());
+         }
+      });
+
+      gui.reset.addActionListener(new ActionListener() {
+         
+         @Override
+         public void actionPerformed(ActionEvent e){
+            System.out.println("reset");
+            looping = false;
+         }
+      });
+
       //gui extends JFrame so all JFrame methods work on it
       gui.addWindowListener(new WindowListener() {
          @Override
@@ -77,8 +98,9 @@ public class DrumMachine {
       });
    }
 
-   public void playConfiguration(HashMap<String, int[]> pattern){
-      //pattern is [[hat pattern], [snare pattern], [kick pattern]]
+   public void playConfiguration(HashMap<String, String> pattern){
+      looping = true;
+      int ns = Integer.parseInt(pattern.get("bpm"));
       System.out.println(pattern);
    }
    public static void main(String[] args){

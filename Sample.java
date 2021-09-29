@@ -50,7 +50,7 @@ public class Sample implements LineListener, Runnable {
     @Override
     public void update(LineEvent event){
         LineEvent.Type type = event.getType();
-        System.out.println(event.toString());
+        //System.out.println(event.toString());
         if (type == LineEvent.Type.STOP){
             playing = false;
         }
