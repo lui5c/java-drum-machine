@@ -4,6 +4,7 @@
  * 
  *  Tip to use a new Thread to play concurrent sounds:
  *  https://stackoverflow.com/questions/48735326/cant-play-sound-in-java-using-clip
+ *  https://stackoverflow.com/questions/63210268/how-to-start-resume-and-stop-pause-a-thread-inside-the-action-listener-in-java
  */
 import java.io.File;
 import java.io.IOException;
