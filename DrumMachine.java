@@ -29,10 +29,11 @@ public class DrumMachine extends Thread{
    volatile boolean looping = false;
    volatile boolean listening = false;
 
-   String hatpattern;
-   String snarepattern;
-   String kickpattern;
-   long interval;
+   boolean[] hatPattern;
+   boolean[] snarepattern;
+   boolean[] kickpattern;
+   volatile long interval = -1;
+   int beatsElapsed = 0;
 
    public DrumMachine(){
       threadPool = Executors.newFixedThreadPool(3);
@@ -58,21 +59,26 @@ public class DrumMachine extends Thread{
          System.out.print("Could not successfully initialize DrumMachine.");
          System.exit(1);
       }
-      threadPool.execute(kickSample);
-      threadPool.execute(hatSample);
-      threadPool.execute(snareSample);
+      //threadPool.execute(kickSample);
+      //threadPool.execute(hatSample);
+      //threadPool.execute(snareSample);
       
       listening = true;
    }
 
-   public void setConfig(HashMap<String, String> pattern){
+   public synchronized void setConfig(HashMap<String, String> pattern){
       // parse the information in the HashMap
       System.out.println("configuring drum machine for :" + pattern);
       interval = Long.parseLong(pattern.get("interval")); // time to wait between beats
-      String hatPattern = pattern.get("hat");
-      String snarePattern = pattern.get("snare");
-      String kickPattern = pattern.get("kick");
-      System.out.println("hat repeats every " + hatPattern.length() + " beats, snare repeats every " + snarePattern.length() + " beats, kick repeats every " + kickPattern.length() + " beats, ns between beats is " + interval);
+      notifyAll();
+      String hatString = pattern.get("hat");
+      hatPattern = new boolean[hatString.length()];
+      //String snareString = pattern.get("snare");
+      //String kickPattern = pattern.get("kick");
+      for (int i = 0; i < hatString.length(); i++){
+         hatPattern[i] = Character.compare(hatString.charAt(i), 'x') == 0;
+      }
+      
    }
 
    @Override
@@ -84,9 +90,13 @@ public class DrumMachine extends Thread{
                   wait();
                }
             }
-            while (looping){
-               System.out.println("playing");
-               Thread.sleep(1000);
+            while (looping && interval > 0){
+               System.out.println("beat");
+               if (hatPattern[beatsElapsed % hatPattern.length]){
+                  threadPool.execute(hatSample);
+               }
+               beatsElapsed++;
+               Thread.sleep(interval);
             }
          }
       } catch (InterruptedException e){

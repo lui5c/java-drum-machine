@@ -20,17 +20,17 @@ public class GUI extends JFrame{
     String hatpattern = "oox";
     String snarepattern = "oxo";
     String kickpattern = "xoo";
-    String bpm = "120";
+    String bpm = "30";
     JButton reset;
     JButton go;
 
-    public long getNSinterval(){
+    public long getMSinterval(){
         // takes in a BPM value and returns the nanosecond amount
         // between beats. 
         double BPM = (double) Integer.valueOf(bpm);
         double secPerBeat = Math.pow(BPM / (double) 60, (double) -1);
-        int ns = (int) (secPerBeat * Math.pow((double) 10, (double) 9));
-        return ns;
+        long ms = (long) (secPerBeat * Math.pow((double) 10, (double) 3));
+        return ms;
     }
 
     public HashMap<String, String> getConfig(){
@@ -58,7 +58,7 @@ public class GUI extends JFrame{
                     .getComponents()[1])
                     .getText();
 
-        config.put("interval", String.valueOf(getNSinterval()));
+        config.put("interval", String.valueOf(getMSinterval()));
         config.put("hat", hatpattern);
         config.put("snare", snarepattern);
         config.put("kick", kickpattern);
@@ -163,6 +163,13 @@ public class GUI extends JFrame{
         });
 
         gui.go.addActionListener(e -> dm.keepLooping());
+        gui.go.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                dm.setConfig(gui.getConfig());
+                dm.keepLooping();
+            }
+        });
         
         DMThread.start();        
     }
