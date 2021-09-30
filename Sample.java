@@ -31,14 +31,12 @@ public class Sample implements LineListener, Runnable {
         try {
             audioClip = (Clip) AudioSystem.getLine(info);
         } catch (LineUnavailableException e){
+            System.out.println("LineUnavailableException for audioClip");
             e.printStackTrace();
         } catch (IllegalArgumentException e){
             System.out.println("When this error happened to me, I had to find a different snare sample. Each sample had a 705kbps bitrate during testing.");
             e.printStackTrace();
         }
-        
-        
-        
         // attach stream to the clip
         System.out.println("Successfully loaded sample " + uri);
         
@@ -57,13 +55,14 @@ public class Sample implements LineListener, Runnable {
     }
 
     @Override
-    public void run(){
+    public synchronized void run(){
         System.out.println("Playing sample: " + originalURI);
-        LineListener pseudo_this = this;
         try {
-            audioClip.addLineListener(pseudo_this);
+            if (audioClip != null){audioClip.close();}
+            audioClip.addLineListener(this);
             audioClip.open(inputStream);
             playing = true;
+            audioClip.setFramePosition(0);
             audioClip.start();
             // while loop necessary to close clip when done
             while (playing){
