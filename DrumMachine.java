@@ -26,12 +26,14 @@ public class DrumMachine extends Thread{
    Sample kickSample = null;
    Sample snareSample = null;
    Sample hatSample = null;
+
    volatile boolean looping = false;
    volatile boolean listening = false;
 
    boolean[] hatPattern;
-   boolean[] snarepattern;
-   boolean[] kickpattern;
+   boolean[] snarePattern;
+   boolean[] kickPattern;
+
    volatile long interval = -1;
    int beatsElapsed = 0;
 
@@ -71,14 +73,21 @@ public class DrumMachine extends Thread{
       System.out.println("configuring drum machine for :" + pattern);
       interval = Long.parseLong(pattern.get("interval")); // time to wait between beats
       notifyAll();
+
       String hatString = pattern.get("hat");
       hatPattern = new boolean[hatString.length()];
-      //String snareString = pattern.get("snare");
-      //String kickPattern = pattern.get("kick");
       for (int i = 0; i < hatString.length(); i++){
-         hatPattern[i] = Character.compare(hatString.charAt(i), 'x') == 0;
-      }
-      
+         hatPattern[i] = Character.compare(hatString.charAt(i), 'x') == 0;}
+
+      String snareString = pattern.get("snare");
+      snarePattern = new boolean[snareString.length()];
+      for (int i = 0; i < snareString.length(); i++){
+         snarePattern[i] = Character.compare(snareString.charAt(i), 'x') == 0;}
+
+      String kickString = pattern.get("kick");
+      kickPattern = new boolean[kickString.length()];
+      for (int i = 0; i < kickString.length(); i++){
+         kickPattern[i] = Character.compare(kickString.charAt(i), 'x') == 0;}      
    }
 
    @Override
