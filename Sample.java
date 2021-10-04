@@ -30,12 +30,16 @@ public class Sample implements LineListener, Runnable {
         // setup Clip
         try {
             audioClip = (Clip) AudioSystem.getLine(info);
+            audioClip.addLineListener(this);
+            audioClip.open(inputStream);
         } catch (LineUnavailableException e){
             System.out.println("LineUnavailableException for audioClip");
             e.printStackTrace();
         } catch (IllegalArgumentException e){
             System.out.println("When this error happened to me, I had to find a different snare sample. Each sample had a 705kbps bitrate during testing.");
             e.printStackTrace();
+        } catch (IOException e){
+            System.out.println("IOException initializing Sample");
         }
         // attach stream to the clip
         System.out.println("Successfully loaded sample " + uri);
@@ -51,36 +55,26 @@ public class Sample implements LineListener, Runnable {
         System.out.println(type.toString());
         if (type == LineEvent.Type.STOP){
             playing = false;
+        } else if (type == LineEvent.Type.CLOSE){
+            System.out.println("registered a close event");
         }
     }
 
     @Override
     public synchronized void run(){
         System.out.println("Playing sample: " + originalURI);
-        try {
-            if (audioClip != null){audioClip.close();}
-            audioClip.addLineListener(this);
-            audioClip.open(inputStream);
-            playing = true;
-            audioClip.setFramePosition(0);
-            audioClip.start();
-            // while loop necessary to close clip when done
-            while (playing){
-                try{
-                    Thread.sleep(100);
-                    //System.out.println("sleeping");
-                } catch (InterruptedException e){
-                    System.out.println("Error sleeping thread");
-                    e.printStackTrace();
-                }
+        playing = true;
+        audioClip.setFramePosition(0);
+        audioClip.start();
+        // while loop necessary to close clip when done
+        while (playing){
+            try{
+                Thread.sleep(100);
+                //System.out.println("sleeping");
+            } catch (InterruptedException e){
+                System.out.println("Error sleeping thread");
+                e.printStackTrace();
             }
-            audioClip.close();
-        } catch (LineUnavailableException e){
-            System.out.println("Line unavailable");
-            e.printStackTrace();
-        } catch (IOException e){
-            System.out.println("IOException");
-            e.printStackTrace();
-        }
+        } 
     }
 }

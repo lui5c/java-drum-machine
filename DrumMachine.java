@@ -72,7 +72,6 @@ public class DrumMachine extends Thread{
       // parse the information in the HashMap
       System.out.println("configuring drum machine for :" + pattern);
       interval = Long.parseLong(pattern.get("interval")); // time to wait between beats
-      notifyAll();
 
       String hatString = pattern.get("hat");
       hatPattern = new boolean[hatString.length()];
@@ -87,7 +86,9 @@ public class DrumMachine extends Thread{
       String kickString = pattern.get("kick");
       kickPattern = new boolean[kickString.length()];
       for (int i = 0; i < kickString.length(); i++){
-         kickPattern[i] = Character.compare(kickString.charAt(i), 'x') == 0;}      
+         kickPattern[i] = Character.compare(kickString.charAt(i), 'x') == 0;}    
+      notifyAll();
+
    }
 
    @Override
@@ -103,6 +104,12 @@ public class DrumMachine extends Thread{
                System.out.println("beat");
                if (hatPattern[beatsElapsed % hatPattern.length]){
                   threadPool.execute(hatSample);
+               }
+               if (snarePattern[beatsElapsed % snarePattern.length]){
+                  threadPool.execute(snareSample);
+               }
+               if (kickPattern[beatsElapsed % kickPattern.length]){
+                  threadPool.execute(kickSample);
                }
                beatsElapsed++;
                Thread.sleep(interval);
