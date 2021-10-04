@@ -1,3 +1,4 @@
+
 /**
  *  Help with javax.sound.sampled.Clip provided by:
  *  https://www.codejava.net/coding/how-to-play-back-audio-in-java-with-examples
@@ -11,8 +12,8 @@ import java.io.IOException;
 
 import javax.sound.sampled.*;
 
-import java.util.concurrent.ExecutorService;  
-import java.util.concurrent.Executors;  
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -21,7 +22,7 @@ import java.awt.event.*;
 
 import java.util.HashMap;
 
-public class DrumMachine extends Thread{
+public class DrumMachine extends Thread {
    ExecutorService threadPool;
    Sample kickSample = null;
    Sample snareSample = null;
@@ -37,101 +38,112 @@ public class DrumMachine extends Thread{
    volatile long interval = -1;
    int beatsElapsed = 0;
 
-   public DrumMachine(){
+   public DrumMachine() {
       threadPool = Executors.newFixedThreadPool(3);
 
       String kick_path = "assets/sounds/kick.wav";
       String snare_path = "assets/sounds/snare.wav";
       String hat_path = "assets/sounds/hat.wav";
-      
+
       try {
          kickSample = new Sample(kick_path);
          snareSample = new Sample(snare_path);
          hatSample = new Sample(hat_path);
-      } catch (UnsupportedAudioFileException e){
+      } catch (UnsupportedAudioFileException e) {
          kickSample = null;
          System.out.println("Unsupported Audio File");
          e.printStackTrace();
-      } catch (IOException e){
+      } catch (IOException e) {
          kickSample = null;
          e.printStackTrace();
       }
 
-      if (kickSample == null || snareSample == null || hatSample == null){
+      if (kickSample == null || snareSample == null || hatSample == null) {
          System.out.print("Could not successfully initialize DrumMachine.");
          System.exit(1);
       }
-      //threadPool.execute(kickSample);
-      //threadPool.execute(hatSample);
-      //threadPool.execute(snareSample);
-      
+
+      Thread hatSampleThread = new Thread(hatSample);
+      Thread snareSampleThread = new Thread(snareSample);
+      Thread kickSampleThread = new Thread(kickSample);
+
+      hatSampleThread.start();
+      snareSampleThread.start();
+      kickSampleThread.start();
+
       listening = true;
    }
 
-   public synchronized void setConfig(HashMap<String, String> pattern){
+   public synchronized void setConfig(HashMap<String, String> pattern) {
       // parse the information in the HashMap
       System.out.println("configuring drum machine for :" + pattern);
       interval = Long.parseLong(pattern.get("interval")); // time to wait between beats
 
       String hatString = pattern.get("hat");
       hatPattern = new boolean[hatString.length()];
-      for (int i = 0; i < hatString.length(); i++){
-         hatPattern[i] = Character.compare(hatString.charAt(i), 'x') == 0;}
+      for (int i = 0; i < hatString.length(); i++) {
+         hatPattern[i] = Character.compare(hatString.charAt(i), 'x') == 0;
+      }
 
       String snareString = pattern.get("snare");
       snarePattern = new boolean[snareString.length()];
-      for (int i = 0; i < snareString.length(); i++){
-         snarePattern[i] = Character.compare(snareString.charAt(i), 'x') == 0;}
+      for (int i = 0; i < snareString.length(); i++) {
+         snarePattern[i] = Character.compare(snareString.charAt(i), 'x') == 0;
+      }
 
       String kickString = pattern.get("kick");
       kickPattern = new boolean[kickString.length()];
-      for (int i = 0; i < kickString.length(); i++){
-         kickPattern[i] = Character.compare(kickString.charAt(i), 'x') == 0;}    
+      for (int i = 0; i < kickString.length(); i++) {
+         kickPattern[i] = Character.compare(kickString.charAt(i), 'x') == 0;
+      }
       notifyAll();
 
    }
 
    @Override
-   public void run(){
+   public void run() {
       try {
-         while (listening){
-            synchronized(this){
-               if(!looping){
+         while (listening) {
+            synchronized (this) {
+               if (!looping) {
                   wait();
                }
             }
-            while (looping && interval > 0){
+            while (looping && interval > 0) {
                System.out.println("beat");
-               if (hatPattern[beatsElapsed % hatPattern.length]){
-                  threadPool.execute(hatSample);
+               if (hatPattern[beatsElapsed % hatPattern.length]) {
+                  hatSample.play();
                }
-               if (snarePattern[beatsElapsed % snarePattern.length]){
-                  threadPool.execute(snareSample);
+               if (snarePattern[beatsElapsed % snarePattern.length]) {
+                  snareSample.play();
                }
-               if (kickPattern[beatsElapsed % kickPattern.length]){
-                  threadPool.execute(kickSample);
+               if (kickPattern[beatsElapsed % kickPattern.length]) {
+                  kickSample.play();
                }
                beatsElapsed++;
                Thread.sleep(interval);
             }
          }
-      } catch (InterruptedException e){
+      } catch (InterruptedException e) {
          System.out.println("problem sleeping thread");
       }
    }
 
-   public synchronized void keepLooping(){
+   public synchronized void keepLooping() {
       looping = true;
       notifyAll();
    }
 
-   public synchronized void stopLooping(){
+   public synchronized void stopLooping() {
       looping = false;
       notifyAll();
    }
 
-   public synchronized void stopListening(){
+   public synchronized void stopListening() {
       listening = false;
+      hatSample.shutdown();
+      snareSample.shutdown();
+      kickSample.shutdown();
       notifyAll();
    }
 }

@@ -9,11 +9,13 @@ import javax.sound.sampled.*;
  * 
  */
 
-public class Sample implements LineListener, Runnable {
+public class Sample extends Thread implements LineListener {
     Clip audioClip;
     String originalURI;
     boolean playing = false;
     AudioInputStream inputStream;
+
+    volatile boolean listening = false;
 
     public Sample (String uri) throws UnsupportedAudioFileException, IOException {
         // helper function to load each file and return a Clip object
@@ -43,7 +45,7 @@ public class Sample implements LineListener, Runnable {
         }
         // attach stream to the clip
         System.out.println("Successfully loaded sample " + uri);
-        
+        listening = true;
     }
 
     /** necessary for LineListener interface
@@ -52,7 +54,6 @@ public class Sample implements LineListener, Runnable {
     @Override
     public void update(LineEvent event){
         LineEvent.Type type = event.getType();
-        System.out.println(type.toString());
         if (type == LineEvent.Type.STOP){
             playing = false;
         } else if (type == LineEvent.Type.CLOSE){
@@ -62,19 +63,40 @@ public class Sample implements LineListener, Runnable {
 
     @Override
     public synchronized void run(){
-        System.out.println("Playing sample: " + originalURI);
-        playing = true;
-        audioClip.setFramePosition(0);
-        audioClip.start();
-        // while loop necessary to close clip when done
-        while (playing){
-            try{
-                Thread.sleep(100);
-                //System.out.println("sleeping");
-            } catch (InterruptedException e){
-                System.out.println("Error sleeping thread");
-                e.printStackTrace();
+        try{
+            while(listening){
+                synchronized(this){
+                    if (!playing){
+                        wait();
+                    }
+                }
+                audioClip.start();
+            // while loop necessary to close clip when done
+                while (playing){
+                    try{
+                        Thread.sleep(100);
+                        //System.out.println("sleeping");
+                    } catch (InterruptedException e){
+                        System.out.println("Error sleeping thread");
+                        e.printStackTrace();
+                    }
+                }
             }
-        } 
+        } catch (Exception e){
+            System.out.println("problem sleeping thread");
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void play(){
+        audioClip.setFramePosition(0);
+        playing = true;
+        notifyAll();
+    }
+
+    public synchronized void shutdown(){
+        playing = false;
+        audioClip.close();
+        notifyAll();
     }
 }
