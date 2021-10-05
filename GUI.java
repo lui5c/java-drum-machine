@@ -17,10 +17,10 @@ public class GUI extends JFrame{
     JFrame f;
     Font helvetica = new Font("Helvetica", Font.BOLD, 24);
     Font consolas = new Font("Consolas", Font.BOLD, 36);
-    String hatpattern = "oox";
-    String snarepattern = "oxo";
-    String kickpattern = "xoo";
-    String bpm = "30";
+    String hatpattern = "x";
+    String snarepattern = "o";
+    String kickpattern = "o";
+    String bpm = "250";
     JButton reset;
     JButton go;
 
@@ -137,7 +137,6 @@ public class GUI extends JFrame{
             @Override
             public void windowClosed(WindowEvent e){
                //System.out.println("window closed");
-               dm.threadPool.shutdown();
                dm.stopListening();
             }
             @Override

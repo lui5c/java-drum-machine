@@ -23,7 +23,6 @@ import java.awt.event.*;
 import java.util.HashMap;
 
 public class DrumMachine extends Thread {
-   ExecutorService threadPool;
    Sample kickSample = null;
    Sample snareSample = null;
    Sample hatSample = null;
@@ -31,15 +30,18 @@ public class DrumMachine extends Thread {
    volatile boolean looping = false;
    volatile boolean listening = false;
 
-   boolean[] hatPattern;
-   boolean[] snarePattern;
-   boolean[] kickPattern;
+   volatile boolean[] hatPattern;
+   volatile boolean[] snarePattern;
+   volatile boolean[] kickPattern;
 
    volatile long interval = -1;
    int beatsElapsed = 0;
 
+   public Thread hatSampleThread;
+   public Thread snareSampleThread;
+   public Thread kickSampleThread;
+
    public DrumMachine() {
-      threadPool = Executors.newFixedThreadPool(3);
 
       String kick_path = "assets/sounds/kick.wav";
       String snare_path = "assets/sounds/snare.wav";
@@ -63,9 +65,9 @@ public class DrumMachine extends Thread {
          System.exit(1);
       }
 
-      Thread hatSampleThread = new Thread(hatSample);
-      Thread snareSampleThread = new Thread(snareSample);
-      Thread kickSampleThread = new Thread(kickSample);
+      hatSampleThread = new Thread(hatSample);
+      snareSampleThread = new Thread(snareSample);
+      kickSampleThread = new Thread(kickSample);
 
       hatSampleThread.start();
       snareSampleThread.start();
@@ -97,7 +99,6 @@ public class DrumMachine extends Thread {
          kickPattern[i] = Character.compare(kickString.charAt(i), 'x') == 0;
       }
       notifyAll();
-
    }
 
    @Override
@@ -110,17 +111,26 @@ public class DrumMachine extends Thread {
                }
             }
             while (looping && interval > 0) {
-               System.out.println("beat");
+               String hat = "_";
+               String snare = "_";
+               String kick = "_";
+
                if (hatPattern[beatsElapsed % hatPattern.length]) {
                   hatSample.play();
+                  hat = "h";
                }
                if (snarePattern[beatsElapsed % snarePattern.length]) {
                   snareSample.play();
+                  snare = "s";
                }
                if (kickPattern[beatsElapsed % kickPattern.length]) {
                   kickSample.play();
+                  kick = "k";
                }
                beatsElapsed++;
+
+               System.out.print(beatsElapsed + "\t");
+               System.out.println(kick+snare+hat);
                Thread.sleep(interval);
             }
          }
@@ -141,6 +151,7 @@ public class DrumMachine extends Thread {
 
    public synchronized void stopListening() {
       listening = false;
+      looping = false;
       hatSample.shutdown();
       snareSample.shutdown();
       kickSample.shutdown();
