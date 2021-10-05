@@ -93,8 +93,13 @@ public class Sample extends Thread implements LineListener {
 
     public synchronized void play(){
         if (!playing){
+            audioClip.setFramePosition(0);
             audioClip.start();}
-        audioClip.setFramePosition(0);
+        else {
+            audioClip.stop();
+            audioClip.setFramePosition(0);
+            audioClip.start();
+        }
         notifyAll();
     }
 
