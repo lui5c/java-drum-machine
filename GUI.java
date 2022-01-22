@@ -174,6 +174,6 @@ public class GUI extends JFrame{
             }
         });
         
-        DMThread.start();        
+        DMThread.run();        
     }
 }
