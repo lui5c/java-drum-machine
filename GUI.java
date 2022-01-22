@@ -3,7 +3,6 @@ import java.awt.*;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.*;
 import java.awt.event.*;
 
 
@@ -17,10 +16,10 @@ public class GUI extends JFrame{
     JFrame f;
     Font helvetica = new Font("Helvetica", Font.BOLD, 24);
     Font consolas = new Font("Consolas", Font.BOLD, 36);
-    String hatpattern = "oox";
-    String snarepattern = "oxo";
-    String kickpattern = "xoo";
-    String bpm = "30";
+    String hatpattern = "x";
+    String snarepattern = "ooxo";
+    String kickpattern = "xooo";
+    String bpm = "200";
     JButton reset;
     JButton go;
 

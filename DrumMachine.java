@@ -7,18 +7,12 @@
  *  https://stackoverflow.com/questions/48735326/cant-play-sound-in-java-using-clip
  *  https://stackoverflow.com/questions/63210268/how-to-start-resume-and-stop-pause-a-thread-inside-the-action-listener-in-java
  */
-import java.io.File;
 import java.io.IOException;
 
 import javax.sound.sampled.*;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.*;
-import java.awt.event.*;
 
 import java.util.HashMap;
 
