@@ -110,8 +110,6 @@ public class DrumMachine extends Thread {
       for (int i = 0; i < kickString.length(); i++) {
          kickPattern[i] = Character.compare(kickString.charAt(i), 'x') == 0;
       }
-      
-      notifyAll();
    }
 
    @Override
@@ -124,6 +122,11 @@ public class DrumMachine extends Thread {
                }
             }
             while (looping && interval > 0) {
+               // play and also measure which thread is doing the playing
+               // if all threads are busy, then the machine is going too fast
+               // also, show a little text interface to monitor the individual
+               // beats as they come out.
+
                String hat = "__";
                String snare = "__";
                String kick = "__";
