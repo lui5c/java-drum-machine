@@ -56,9 +56,8 @@ public class Sample extends Thread implements LineListener {
         LineEvent.Type type = event.getType();
         if (type == LineEvent.Type.STOP){
             playing = false;
-            notifyAll();
         } else if (type == LineEvent.Type.CLOSE){
-            System.out.println("registered a close event");
+            //System.out.println("registered a close event");
         } else if (type == LineEvent.Type.START){
             playing = true;
             notifyAll();
@@ -100,18 +99,15 @@ public class Sample extends Thread implements LineListener {
             audioClip.setFramePosition(0);
             audioClip.start();
         }
-        notifyAll();
     }
 
     public synchronized void stopPlaying(){
         audioClip.stop();
-        notifyAll();
     }
 
     public synchronized void shutdown(){
         playing = false;
         listening = false;
         audioClip.close();
-        notifyAll();
     }
 }

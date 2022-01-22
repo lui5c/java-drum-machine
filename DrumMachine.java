@@ -123,7 +123,7 @@ public class DrumMachine extends Thread {
                   wait();
                }
             }
-            while (looping && interval > 0) {
+            while (looping) {
                // play and also measure which thread is doing the playing
                // if all threads are busy, then the machine is going too fast
                // also, show a little text interface to monitor the individual
@@ -182,20 +182,20 @@ public class DrumMachine extends Thread {
 
    public synchronized void keepLooping() {
       looping = true;
-      notifyAll();
+      notifyAll(); // to wake wait() ing if (!looping)
    }
 
    public synchronized void stopLooping() {
       looping = false;
       beatsElapsed = 0;
-      notifyAll();
    }
 
    public synchronized void stopListening() {
       listening = false;
+      notifyAll(); //necessary to stop while (listening)
       looping = false;
       for (int i = 0; i < allSamples.length; i++){
-         allSamples[i].shutdown();}
-      notifyAll();
+         allSamples[i].shutdown();
+      }
    }
 }
