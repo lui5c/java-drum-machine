@@ -11,61 +11,74 @@ import java.io.IOException;
 
 import javax.sound.sampled.*;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import java.util.HashMap;
 
 public class DrumMachine extends Thread {
-   ExecutorService threadPool;
-   Sample kickSample = null;
-   Sample snareSample = null;
-   Sample hatSample = null;
+   Sample kickSample1 = null;
+   Sample snareSample1 = null;
+   Sample hatSample1 = null;
+   Sample kickSample2 = null;
+   Sample snareSample2 = null;
+   Sample hatSample2 = null;
+   Sample kickSample3 = null;
+   Sample snareSample3 = null;
+   Sample hatSample3 = null;
+
+   Sample[] allSamples;
 
    volatile boolean looping = false;
    volatile boolean listening = false;
 
-   // the actual data structure of the pattern
-   boolean[] hatPattern;
-   boolean[] snarePattern;
-   boolean[] kickPattern;
+   volatile boolean[] hatPattern;
+   volatile boolean[] snarePattern;
+   volatile boolean[] kickPattern;
 
    volatile long interval = -1;
    int beatsElapsed = 0;
 
    public DrumMachine() {
-      threadPool = Executors.newFixedThreadPool(3);
 
       String kick_path = "assets/sounds/kick.wav";
       String snare_path = "assets/sounds/snare.wav";
       String hat_path = "assets/sounds/hat.wav";
 
       try {
-         kickSample = new Sample(kick_path);
-         snareSample = new Sample(snare_path);
-         hatSample = new Sample(hat_path);
+         kickSample1 = new Sample(kick_path);
+         snareSample1 = new Sample(snare_path);
+         hatSample1 = new Sample(hat_path);
+         kickSample2 = new Sample(kick_path);
+         snareSample2 = new Sample(snare_path);
+         hatSample2 = new Sample(hat_path);
+         kickSample3 = new Sample(kick_path);
+         snareSample3 = new Sample(snare_path);
+         hatSample3 = new Sample(hat_path);
       } catch (UnsupportedAudioFileException e) {
-         kickSample = null;
+         kickSample1 = null;
          System.out.println("Unsupported Audio File");
          e.printStackTrace();
       } catch (IOException e) {
-         kickSample = null;
+         kickSample1 = null;
          e.printStackTrace();
       }
 
-      if (kickSample == null || snareSample == null || hatSample == null) {
-         System.out.print("Could not successfully initialize DrumMachine.");
-         System.exit(1);
+      allSamples = new Sample[9];
+      allSamples[0] = kickSample1;
+      allSamples[1] = kickSample2;
+      allSamples[2] = kickSample3;
+      allSamples[3] = snareSample1;
+      allSamples[4] = snareSample2;
+      allSamples[5] = snareSample3;
+      allSamples[6] = hatSample1;
+      allSamples[7] = hatSample2;
+      allSamples[8] = hatSample3;
+
+      int index = 0;
+      while (index < allSamples.length){
+         if (allSamples[index++] == null) {
+            System.out.print("Could not successfully initialize DrumMachine.");
+            System.exit(1);
+         }
       }
-
-      Thread hatSampleThread = new Thread(hatSample);
-      Thread snareSampleThread = new Thread(snareSample);
-      Thread kickSampleThread = new Thread(kickSample);
-
-      hatSampleThread.start();
-      snareSampleThread.start();
-      kickSampleThread.start();
-
       listening = true;
    }
 
@@ -92,7 +105,6 @@ public class DrumMachine extends Thread {
          kickPattern[i] = Character.compare(kickString.charAt(i), 'x') == 0;
       }
       notifyAll();
-
    }
 
    @Override
@@ -105,17 +117,47 @@ public class DrumMachine extends Thread {
                }
             }
             while (looping && interval > 0) {
-               System.out.println("beat");
+               String hat = "__";
+               String snare = "__";
+               String kick = "__";
+
                if (hatPattern[beatsElapsed % hatPattern.length]) {
-                  hatSample.play();
+                  if (!hatSample1.playing){
+                     hatSample1.play();hat="h1";
+                  } else if (!hatSample2.playing){
+                     hatSample2.play();hat="h2";
+                  } else  if (!hatSample3.playing){
+                     hatSample3.play();hat="h3";
+                  } else {
+                     System.out.println("bpm overload!!!!");
+                  }
                }
                if (snarePattern[beatsElapsed % snarePattern.length]) {
-                  snareSample.play();
+                  if (!snareSample1.playing){
+                     snareSample1.play();snare="s1";
+                  } else if (!snareSample2.playing){
+                     snareSample2.play();snare="s2";
+                  } else  if (!snareSample3.playing){
+                     snareSample3.play();snare="s3";
+                  } else {
+                     System.out.println("bpm overload!!!!");
+                  }
                }
                if (kickPattern[beatsElapsed % kickPattern.length]) {
-                  kickSample.play();
+                  if (!kickSample1.playing){
+                     kickSample1.play();kick="k1";
+                  } else if (!kickSample2.playing){
+                     kickSample2.play();kick="k2";
+                  } else  if (!kickSample3.playing){
+                     kickSample3.play();kick="k3";
+                  } else {
+                     System.out.println("bpm overload!!!!");
+                  }
                }
                beatsElapsed++;
+
+               System.out.print(beatsElapsed + "\t");
+               System.out.println(kick+snare+hat);
                Thread.sleep(interval);
             }
          }
@@ -131,14 +173,15 @@ public class DrumMachine extends Thread {
 
    public synchronized void stopLooping() {
       looping = false;
+      beatsElapsed = 0;
       notifyAll();
    }
 
    public synchronized void stopListening() {
       listening = false;
-      hatSample.shutdown();
-      snareSample.shutdown();
-      kickSample.shutdown();
+      looping = false;
+      for (int i = 0; i < allSamples.length; i++){
+         allSamples[i].shutdown();}
       notifyAll();
    }
 }

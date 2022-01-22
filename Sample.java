@@ -12,7 +12,7 @@ import javax.sound.sampled.*;
 public class Sample extends Thread implements LineListener {
     Clip audioClip;
     String originalURI;
-    boolean playing = false;
+    volatile boolean playing = false;
     AudioInputStream inputStream;
 
     volatile boolean listening = false;
@@ -52,17 +52,21 @@ public class Sample extends Thread implements LineListener {
      *  allows you to talk to the Line
      */
     @Override
-    public void update(LineEvent event){
+    public synchronized void update(LineEvent event){
         LineEvent.Type type = event.getType();
         if (type == LineEvent.Type.STOP){
             playing = false;
+            notifyAll();
         } else if (type == LineEvent.Type.CLOSE){
             System.out.println("registered a close event");
+        } else if (type == LineEvent.Type.START){
+            playing = true;
+            notifyAll();
         }
     }
 
     @Override
-    public synchronized void run(){
+    public void run(){
         try{
             while(listening){
                 synchronized(this){
@@ -70,11 +74,10 @@ public class Sample extends Thread implements LineListener {
                         wait();
                     }
                 }
-                audioClip.start();
             // while loop necessary to close clip when done
                 while (playing){
                     try{
-                        Thread.sleep(100);
+                        Thread.sleep(1);
                         //System.out.println("sleeping");
                     } catch (InterruptedException e){
                         System.out.println("Error sleeping thread");
@@ -89,13 +92,25 @@ public class Sample extends Thread implements LineListener {
     }
 
     public synchronized void play(){
-        audioClip.setFramePosition(0);
-        playing = true;
+        if (!playing){
+            audioClip.setFramePosition(0);
+            audioClip.start();}
+        else {
+            audioClip.stop();
+            audioClip.setFramePosition(0);
+            audioClip.start();
+        }
+        notifyAll();
+    }
+
+    public synchronized void stopPlaying(){
+        audioClip.stop();
         notifyAll();
     }
 
     public synchronized void shutdown(){
         playing = false;
+        listening = false;
         audioClip.close();
         notifyAll();
     }

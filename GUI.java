@@ -141,7 +141,6 @@ public class GUI extends JFrame{
             @Override
             public void windowClosed(WindowEvent e){
                //System.out.println("window closed");
-               dm.threadPool.shutdown();
                dm.stopListening();
             }
             @Override
