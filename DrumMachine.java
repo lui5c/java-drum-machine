@@ -114,7 +114,7 @@ public class DrumMachine extends Thread {
 
    @Override
    public void run() {
-      // this 
+      // this runs when DMThread.start() is called from GUI.java
       try {
          while (listening) {
             synchronized (this) {
