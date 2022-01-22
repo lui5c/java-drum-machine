@@ -44,5 +44,7 @@ GUI.java allows the user to input configurations and start and stop the sequence
 3. When the GUI's STOP button is pressed, the DrumMachine stops looping, awaiting the next configuration it should play.
 
 ## How to run
-<code>javac GUI.java</code>
-<code>java GUI</code>
+```bash
+> javac GUI.java
+> java GUI
+```
