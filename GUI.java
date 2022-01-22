@@ -24,7 +24,7 @@ public class GUI extends JFrame{
     JButton go;
 
     public long getMSinterval(){
-        // takes in a BPM value and returns the nanosecond amount
+        // takes in a BPM value and returns the millisecond amount
         // between beats. 
         double BPM = (double) Integer.valueOf(bpm);
         double secPerBeat = Math.pow(BPM / (double) 60, (double) -1);
@@ -38,6 +38,11 @@ public class GUI extends JFrame{
         * "hat"    : "oox"
         * "snare"  : "oxo"
         * "kick"   : "xoo"
+
+        * This method reads the text fields of the JFrame and parses them
+        * into a HashMap. It is used by the main() of GUI.java, which uses
+        * it to pass the HashMap-ified information into DrumMachine.setConfig(), 
+        * which takes in a HashMap as a configuration.
         */
         HashMap<String, String> config = new HashMap<String, String>();
         bpm = ((JTextField) ((JPanel) getContentPane()

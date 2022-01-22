@@ -25,6 +25,7 @@ public class DrumMachine extends Thread {
    volatile boolean looping = false;
    volatile boolean listening = false;
 
+   // the actual data structure of the pattern
    boolean[] hatPattern;
    boolean[] snarePattern;
    boolean[] kickPattern;
