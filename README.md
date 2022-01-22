@@ -15,19 +15,19 @@ x is a note, o is a rest. The hat plays every beat (1-note pattern). The kick pl
 Some cool rhythms to try out:
 
 Bossa Nova:
-hat:    oxxx
-snare:  oooxooxooxooxoox
-kick:   xxoo
+- hat:    oxxx
+- snare:  oooxooxooxooxoox
+- kick:   xxoo
 
 Four against three:
-hat:    xxxo
-snare:  ooxo
-kick:   xoo
+- hat:    xxxo
+- snare:  ooxo
+- kick:   xoo
 
 Five against four:
-hat:    xxxo
-snare:  o
-kick:   xoxxo
+- hat:    xxxo
+- snare:  o
+- kick:   xoxxo
 
 ## How it works
 
@@ -42,3 +42,7 @@ GUI.java allows the user to input configurations and start and stop the sequence
 2. When the GUI's GO button is pressed, it passes its configuration to the DrumMachine, which then begins playing the correct Samples with the correct amount of time in between samples. 
 
 3. When the GUI's STOP button is pressed, the DrumMachine stops looping, awaiting the next configuration it should play.
+
+## How to run
+<code>javac GUI.java</code>
+<code>java GUI</code>
