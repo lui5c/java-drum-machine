@@ -19,7 +19,7 @@ public class GUI extends JFrame{
     String hatpattern = "x";
     String snarepattern = "ooxo";
     String kickpattern = "xooo";
-    String bpm = "200";
+    String bpm = "350";
     JButton reset;
     JButton go;
 
@@ -140,7 +140,7 @@ public class GUI extends JFrame{
         gui.addWindowListener(new WindowListener() {
             @Override
             public void windowClosed(WindowEvent e){
-               //System.out.println("window closed");
+               System.out.println("closing....");
                dm.stopListening();
             }
             @Override
