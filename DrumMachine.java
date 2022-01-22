@@ -114,10 +114,12 @@ public class DrumMachine extends Thread {
 
    @Override
    public void run() {
+      // this 
       try {
          while (listening) {
             synchronized (this) {
                if (!looping) {
+                  // if we aren't looping, wait until we are
                   wait();
                }
             }
@@ -164,10 +166,12 @@ public class DrumMachine extends Thread {
                      System.out.println("bpm overload!!!!");
                   }
                }
-               beatsElapsed++;
 
+               // format and print the rhythm
+               beatsElapsed++;
                System.out.print(beatsElapsed + "\t");
                System.out.println(kick+snare+hat);
+               //wait until the next time to play the Samples
                Thread.sleep(interval);
             }
          }
