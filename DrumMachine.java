@@ -83,27 +83,34 @@ public class DrumMachine extends Thread {
    }
 
    public synchronized void setConfig(HashMap<String, String> pattern) {
-      // parse the information in the HashMap
+      // parse the information in the HashMap returned by GUI.getConfig()
       System.out.println("configuring drum machine for :" + pattern);
-      interval = Long.parseLong(pattern.get("interval")); // time to wait between beats
+      
+      // time to wait between beats
+      interval = Long.parseLong(pattern.get("interval")); 
 
+      // reinitiate the hatPattern boolean[]
+      // and make the booleans correspond to the string value
       String hatString = pattern.get("hat");
       hatPattern = new boolean[hatString.length()];
       for (int i = 0; i < hatString.length(); i++) {
          hatPattern[i] = Character.compare(hatString.charAt(i), 'x') == 0;
       }
-
+      
+      // reinitiate and populate snarePattern boolean[]
       String snareString = pattern.get("snare");
       snarePattern = new boolean[snareString.length()];
       for (int i = 0; i < snareString.length(); i++) {
          snarePattern[i] = Character.compare(snareString.charAt(i), 'x') == 0;
       }
 
+      // reinitiate and populate kickPattern boolean[]
       String kickString = pattern.get("kick");
       kickPattern = new boolean[kickString.length()];
       for (int i = 0; i < kickString.length(); i++) {
          kickPattern[i] = Character.compare(kickString.charAt(i), 'x') == 0;
       }
+      
       notifyAll();
    }
 
